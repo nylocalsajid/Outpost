@@ -1,0 +1,1705 @@
+/* ==========================================================================
+   scene.css — the cutaway picture of the outpost, and everything that moves
+   in it. The markup comes from js/ui/components/outpost-scene.js.
+
+   Rule of thumb for this file: a thing moves because the player gave it
+   power, or because the Sun is doing something. That movement is how the
+   picture tells a child what a block does, so it runs on every device; only
+   the purely decorative bits (twinkling stars, the dust devil) stop when a
+   device asks for reduced motion. For the same reason the timings here are
+   written out rather than taken from the shared tokens, which drop to 1ms
+   under reduced motion.
+   ========================================================================== */
+
+.scene {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 600 / 360;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line-strong);
+  background: var(--bg-inset);
+  box-shadow: var(--shadow);
+  font-family: var(--font);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.scene--compact {
+  aspect-ratio: 600 / 228;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ------------------------------------------------------------- the frame */
+
+.scene-frame {
+  display: grid;
+  gap: var(--gap-sm);
+}
+
+.scene-caption {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.6rem;
+  align-items: start;
+  margin: 0;
+  padding: 0.65rem 0.85rem;
+  min-height: 3.6rem;
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  font-size: 0.95rem;
+  font-weight: 650;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.scene-caption__dot {
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-top: 0.28rem;
+  border-radius: 50%;
+  background: var(--caption-color, var(--text-faint));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--caption-color, var(--text-faint)) 25%, transparent);
+  transition: background 240ms var(--ease);
+}
+
+/* ---------------------------------------------------------------- labels */
+
+.scene__label {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.scene__label--made {
+  fill: var(--sys-power);
+  paint-order: stroke;
+  stroke: rgba(4, 7, 15, 0.7);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.scene__label--bay {
+  font-size: 10.5px;
+  fill: var(--text-faint);
+}
+
+.scene__label--bay.is-needed {
+  fill: var(--good);
+}
+
+.scene__sky-label {
+  font-size: 10.5px;
+  font-weight: 650;
+  fill: #cbd6ee;
+  opacity: 0.75;
+}
+
+.scene__leader {
+  fill: none;
+  stroke: var(--text-faint);
+  stroke-width: 1;
+  stroke-dasharray: 2 2;
+  opacity: 0.6;
+}
+
+.scene__leader.is-needed {
+  stroke: var(--good);
+  opacity: 1;
+}
+
+/* Kit that has landed but is not set up yet: there, but grey and still. */
+.is-waiting {
+  opacity: 0.32;
+  filter: grayscale(1);
+}
+
+.is-waiting * {
+  animation: none !important;
+}
+
+.scene__depth {
+  font-size: 12px;
+  font-weight: 700;
+  fill: var(--sys-shield);
+  paint-order: stroke;
+  stroke: rgba(4, 7, 15, 0.75);
+  stroke-width: 3.5px;
+  stroke-linejoin: round;
+}
+
+.scene__depth-next {
+  fill: var(--sys-shield);
+}
+
+/* ------------------------------------------------------------------- sky */
+
+.scene__twinkle {
+  animation: scene-twinkle 3.6s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes scene-twinkle {
+  50% {
+    opacity: 0.15;
+  }
+}
+
+.sun__rays {
+  animation: scene-spin 60s linear infinite;
+}
+
+.sun__ring {
+  fill: none;
+  stroke: var(--warn);
+  stroke-width: 2.5;
+  opacity: 0;
+  animation: scene-flare 1.6s ease-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes scene-flare {
+  0% {
+    transform: scale(1);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(3.6);
+    opacity: 0;
+  }
+}
+
+.sun__label {
+  font-size: 13px;
+  font-weight: 750;
+  fill: #ffd27f;
+  paint-order: stroke;
+  stroke: rgba(4, 7, 15, 0.7);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.scene__beacon {
+  fill: #ff5a5a;
+  animation: scene-blink 2.2s steps(1) infinite;
+}
+
+@keyframes scene-blink {
+  0%,
+  70% {
+    opacity: 0.15;
+  }
+  71%,
+  100% {
+    opacity: 1;
+  }
+}
+
+.scene__devil {
+  animation: scene-devil 5s ease-in-out infinite alternate;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes scene-devil {
+  from {
+    transform: translateX(-12px) skewX(-7deg);
+  }
+  to {
+    transform: translateX(14px) skewX(8deg);
+  }
+}
+
+/* ---------------------------------------------------------------- cables */
+
+.cable__duct {
+  fill: none;
+  stroke: #080c17;
+  stroke-width: 6;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+
+.cable__glow {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 2.4;
+  opacity: var(--lit);
+  transition: opacity 240ms var(--ease);
+}
+
+.cable__flow {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 5 var(--gap);
+  opacity: 0;
+  transition: opacity 240ms var(--ease);
+}
+
+.cable.is-on .cable__flow {
+  opacity: 1;
+  animation: scene-flow var(--t) linear infinite;
+}
+
+@keyframes scene-flow {
+  to {
+    stroke-dashoffset: calc(var(--period) * -1px);
+  }
+}
+
+.cable__port {
+  fill: #141c30;
+  stroke: var(--c);
+  stroke-width: 1.6;
+  transition: fill 240ms var(--ease);
+}
+
+.cable.is-on .cable__port {
+  fill: var(--c);
+}
+
+/* A life-critical system running short: the cable stutters. */
+.cable.is-short .cable__glow,
+.cable.is-short .cable__flow {
+  animation-name: scene-flow, scene-stutter;
+  animation-duration: var(--t), 0.9s;
+  animation-timing-function: linear, steps(1);
+  animation-iteration-count: infinite;
+}
+
+.cable.is-short .cable__port {
+  stroke: var(--danger);
+  animation: scene-stutter 0.9s steps(1) infinite;
+}
+
+@keyframes scene-stutter {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0.2;
+  }
+  55% {
+    opacity: 0.9;
+  }
+  70% {
+    opacity: 0.15;
+  }
+}
+
+/* --------------------------------------------------------------- battery */
+
+.battery__case {
+  fill: #141c30;
+  stroke: #8a7a35;
+  stroke-width: 1.6;
+  transition: stroke 240ms var(--ease);
+}
+
+.battery__cap {
+  fill: #8a7a35;
+  transition: fill 240ms var(--ease);
+}
+
+.battery.is-charged .battery__case {
+  stroke: var(--sys-power);
+}
+
+.battery.is-charged .battery__cap {
+  fill: var(--sys-power);
+}
+
+/* The glow is the charge: none, dim, bright. */
+.battery__glow {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 400ms var(--ease);
+}
+
+.battery.is-charged .battery__glow {
+  opacity: var(--charge);
+  animation: scene-glow 1.8s ease-in-out infinite;
+}
+
+@keyframes scene-glow {
+  50% {
+    transform: scale(1.18);
+  }
+}
+
+.battery__cell {
+  fill: #0a0f1c;
+  stroke: #56617a;
+  stroke-width: 0.8;
+  transition: fill 240ms var(--ease), stroke 240ms var(--ease);
+}
+
+.battery__cell.is-on {
+  fill: var(--sys-power);
+  stroke: #fff3b0;
+  animation: scene-cell 1.8s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes scene-cell {
+  50% {
+    fill: #fff6c2;
+  }
+}
+
+/* ---------------------------------------------------------------- shield */
+
+.scoop {
+  fill: rgba(255, 201, 77, 0.2);
+  stroke: var(--sys-shield);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 2.4;
+  stroke-linejoin: round;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transform: scale(0.2);
+  transition:
+    opacity 240ms var(--ease),
+    transform 320ms cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.scoop.is-on {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.digger__lamp {
+  fill: #56617a;
+}
+
+.digger.is-on .digger__lamp {
+  fill: var(--sys-shield);
+  animation: scene-blink 1s steps(1) infinite;
+}
+
+/* One cycle: scoop at the pit, drive to the habitat, fling, drive back. */
+.digger.is-on .digger__drive {
+  animation: scene-drive var(--dig) ease-in-out infinite;
+}
+
+@keyframes scene-drive {
+  0%,
+  18% {
+    transform: translateX(0);
+  }
+  45%,
+  60% {
+    transform: translateX(var(--run));
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.digger__arm {
+  transform: rotate(16deg);
+  transition: transform 520ms var(--ease);
+}
+
+.digger.is-on .digger__arm {
+  animation: scene-dig var(--dig) ease-in-out infinite;
+}
+
+@keyframes scene-dig {
+  0%,
+  100% {
+    transform: rotate(16deg);
+  }
+  9% {
+    transform: rotate(27deg);
+  }
+  18% {
+    transform: rotate(6deg);
+  }
+  45% {
+    transform: rotate(-24deg);
+  }
+  52% {
+    transform: rotate(-52deg);
+  }
+  60% {
+    transform: rotate(-40deg);
+  }
+}
+
+.digger.is-on .digger__wheel {
+  animation: scene-spin 0.7s linear infinite;
+}
+
+.digger.is-on .digger__cab {
+  animation: scene-rumble 0.3s linear infinite;
+}
+
+@keyframes scene-rumble {
+  50% {
+    transform: translateY(-0.7px);
+  }
+}
+
+.clod {
+  fill: #e9c58a;
+  stroke: rgba(4, 7, 15, 0.5);
+  stroke-width: 0.6;
+  opacity: 0;
+}
+
+.scene--moon .clod {
+  fill: #c9d1e0;
+}
+
+.digger.is-on .clod {
+  animation: scene-clod var(--dig) linear infinite;
+}
+
+@keyframes scene-clod {
+  0%,
+  51% {
+    transform: translate(0, 0);
+    opacity: 0;
+    animation-timing-function: ease-out;
+  }
+  53% {
+    opacity: 1;
+  }
+  74% {
+    transform: translate(calc(var(--ex) * 0.55), calc(var(--ey) - 18px));
+    opacity: 1;
+    animation-timing-function: ease-in;
+  }
+  94% {
+    transform: translate(var(--ex), var(--ey));
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--ex), var(--ey));
+    opacity: 0;
+  }
+}
+
+/* --------------------------------------------------------------- habitat */
+
+/* The fan's speed IS the power level: var(--spin) is seconds per turn. */
+.fan {
+  animation: scene-spin var(--spin) linear infinite;
+}
+
+.hab[data-air='0'] .fan {
+  animation-play-state: paused;
+  opacity: 0.4;
+}
+
+.stream {
+  fill: none;
+  stroke: var(--sys-air);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-dasharray: 7 13;
+  opacity: 0;
+  transition: opacity 240ms var(--ease);
+}
+
+.stream.is-on {
+  opacity: 0.6;
+  animation: scene-stream var(--wind) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes scene-stream {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+@keyframes scene-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.hab__gauge {
+  fill: var(--sys-air);
+  transition: width 240ms var(--ease);
+}
+
+.hab.is-short .hab__gauge {
+  fill: var(--danger);
+}
+
+.bubble {
+  fill: rgba(79, 209, 255, 0.18);
+  stroke: var(--sys-air);
+  stroke-width: 1.1;
+  opacity: 0;
+}
+
+.bubble.is-on {
+  animation: scene-bubble 2.6s linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes scene-bubble {
+  0% {
+    transform: translate(0, 4px) scale(0.5);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(52px, -14px) scale(1.15);
+    opacity: 0;
+  }
+}
+
+.hab__alarm {
+  fill: #ff3b3b;
+  opacity: 0;
+}
+
+.hab.is-short .hab__alarm {
+  animation: scene-alarm 1.1s ease-in-out infinite;
+}
+
+@keyframes scene-alarm {
+  0%,
+  100% {
+    opacity: 0.08;
+  }
+  50% {
+    opacity: 0.42;
+  }
+}
+
+.hab__lamp {
+  fill: var(--good);
+}
+
+.hab.is-short .hab__lamp {
+  fill: var(--danger);
+  animation: scene-blink 0.8s steps(1) infinite;
+}
+
+.crew {
+  transition: transform 800ms var(--ease);
+  transition-delay: var(--delay, 0s);
+}
+
+.is-sheltered .crew {
+  transform: translate(var(--bx), var(--by));
+}
+
+.crew__bob {
+  animation: scene-bob 2.6s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes scene-bob {
+  50% {
+    transform: translateY(-1.2px);
+  }
+}
+
+/* ------------------------------------------------------------- storm bay */
+
+/* A walled corner of the pod. Open and dim until the crew shelters; then the
+   door closes over them and the whole room lights up as its own shield. */
+.bay__wall {
+  fill: none;
+  stroke: #6f7f9f;
+  stroke-width: 2.4;
+  transition: stroke 300ms var(--ease);
+}
+
+.bay__door {
+  fill: #6fd0ff;
+  opacity: 0;
+  transition: opacity 500ms var(--ease) 500ms;
+}
+
+.bay__badge {
+  fill: #3d4d70;
+  transition: fill 300ms var(--ease);
+}
+
+.bay.is-on .bay__wall {
+  stroke: var(--good);
+  animation: scene-bay 1.4s ease-in-out infinite;
+}
+
+.bay.is-on .bay__door {
+  opacity: 0.3;
+}
+
+.bay.is-on .bay__badge {
+  fill: var(--good);
+}
+
+@keyframes scene-bay {
+  50% {
+    stroke-width: 3.6;
+    stroke: #b7ffdc;
+  }
+}
+
+/* ----------------------------------------------------------- shield dome */
+
+/* Blue glass around the pod. One ten-second sequence, repeated:
+     holds   flashes as it turns particles away
+     cracks  cracks spread, blue turns to orange
+     breaks  cracks spread, blue turns to red, then it shatters
+   The colours and cracks are the same dose maths the crew's health uses,
+   so what the glass does is what will happen to the crew. */
+.dome {
+  --glass: #5aa9ff;
+  --warn-glass: #ff9a4d;
+  --bad-glass: #ff4d4d;
+  --seq: 10s;
+}
+
+.dome__fill {
+  fill: var(--glass);
+  opacity: calc(0.06 + var(--strength) * 0.12);
+}
+
+.dome__halo {
+  fill: none;
+  stroke: var(--glass);
+  stroke-width: 9;
+  stroke-linejoin: round;
+  opacity: calc(0.12 + var(--strength) * 0.16);
+}
+
+.dome__edge {
+  fill: none;
+  stroke: var(--glass);
+  stroke-width: calc(2px + var(--strength) * 2.4px);
+  stroke-linejoin: round;
+}
+
+.dome__edge--broken {
+  stroke: var(--bad-glass);
+  stroke-dasharray: 26 11 15 15 34 10 19 13;
+  opacity: 0;
+}
+
+.dome__shine {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.45;
+}
+
+.dome__scar {
+  fill: none;
+  stroke: #d8e8ff;
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.6;
+}
+
+.crack {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: var(--seq) linear infinite;
+}
+
+.crack--1 { animation-name: scene-crack-1; }
+.crack--2 { animation-name: scene-crack-2; }
+.crack--3 { animation-name: scene-crack-3; }
+.crack--4 { animation-name: scene-crack-4; }
+.crack--5 { animation-name: scene-crack-5; }
+.crack--6 { animation-name: scene-crack-6; }
+
+@keyframes scene-crack-1 {
+  0%, 7% { stroke-dashoffset: 1; opacity: 1; }
+  10%, 94% { stroke-dashoffset: 0; opacity: 1; }
+  97% { stroke-dashoffset: 0; opacity: 0; }
+  100% { stroke-dashoffset: 1; opacity: 0; }
+}
+@keyframes scene-crack-2 {
+  0%, 13% { stroke-dashoffset: 1; opacity: 1; }
+  16%, 94% { stroke-dashoffset: 0; opacity: 1; }
+  97% { stroke-dashoffset: 0; opacity: 0; }
+  100% { stroke-dashoffset: 1; opacity: 0; }
+}
+@keyframes scene-crack-3 {
+  0%, 19% { stroke-dashoffset: 1; opacity: 1; }
+  22%, 94% { stroke-dashoffset: 0; opacity: 1; }
+  97% { stroke-dashoffset: 0; opacity: 0; }
+  100% { stroke-dashoffset: 1; opacity: 0; }
+}
+@keyframes scene-crack-4 {
+  0%, 25% { stroke-dashoffset: 1; opacity: 1; }
+  28%, 94% { stroke-dashoffset: 0; opacity: 1; }
+  97% { stroke-dashoffset: 0; opacity: 0; }
+  100% { stroke-dashoffset: 1; opacity: 0; }
+}
+@keyframes scene-crack-5 {
+  0%, 31% { stroke-dashoffset: 1; opacity: 1; }
+  34%, 94% { stroke-dashoffset: 0; opacity: 1; }
+  97% { stroke-dashoffset: 0; opacity: 0; }
+  100% { stroke-dashoffset: 1; opacity: 0; }
+}
+@keyframes scene-crack-6 {
+  0%, 37% { stroke-dashoffset: 1; opacity: 1; }
+  40%, 94% { stroke-dashoffset: 0; opacity: 1; }
+  97% { stroke-dashoffset: 0; opacity: 0; }
+  100% { stroke-dashoffset: 1; opacity: 0; }
+}
+
+/* holds: a bright pulse each time it turns the storm away */
+.dome--holds .dome__edge:not(.dome__edge--broken) {
+  animation: scene-dome-hold 1.1s ease-in-out infinite;
+}
+
+.dome--holds .dome__halo {
+  animation: scene-dome-hold-halo 1.1s ease-in-out infinite;
+}
+
+@keyframes scene-dome-hold {
+  50% {
+    stroke: #cfe6ff;
+  }
+}
+
+@keyframes scene-dome-hold-halo {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* cracks: blue to orange, and it stays up */
+.dome--cracks .dome__edge:not(.dome__edge--broken),
+.dome--cracks .dome__halo {
+  animation: scene-dome-warn-line var(--seq) linear infinite;
+}
+
+.dome--cracks .dome__fill {
+  animation: scene-dome-warn-fill var(--seq) linear infinite;
+}
+
+@keyframes scene-dome-warn-line {
+  0%, 6% { stroke: var(--glass); }
+  40%, 94% { stroke: var(--warn-glass); }
+  100% { stroke: var(--glass); }
+}
+
+@keyframes scene-dome-warn-fill {
+  0%, 6% { fill: var(--glass); }
+  40%, 94% { fill: var(--warn-glass); }
+  100% { fill: var(--glass); }
+}
+
+/* breaks: blue to red, then gone */
+.dome--breaks .dome__edge:not(.dome__edge--broken),
+.dome--breaks .dome__halo {
+  animation: scene-dome-bad-line var(--seq) linear infinite;
+}
+
+.dome--breaks .dome__fill {
+  animation: scene-dome-bad-fill var(--seq) linear infinite;
+}
+
+.dome--breaks .dome__shine,
+.dome--breaks .dome__cracks,
+.dome--breaks .dome__scar {
+  animation: scene-dome-gone var(--seq) linear infinite;
+}
+
+.dome--breaks .dome__edge--broken {
+  animation: scene-dome-broken var(--seq) linear infinite;
+}
+
+@keyframes scene-dome-bad-line {
+  0%, 6% { stroke: var(--glass); opacity: 1; }
+  25% { stroke: var(--warn-glass); opacity: 1; }
+  44%, 48.9% { stroke: var(--bad-glass); opacity: 1; }
+  49%, 95% { stroke: var(--bad-glass); opacity: 0; }
+  100% { stroke: var(--glass); opacity: 1; }
+}
+
+@keyframes scene-dome-bad-fill {
+  0%, 6% { fill: var(--glass); opacity: 0.12; }
+  25% { fill: var(--warn-glass); opacity: 0.16; }
+  44%, 48.9% { fill: var(--bad-glass); opacity: 0.22; }
+  49%, 95% { fill: var(--bad-glass); opacity: 0; }
+  100% { fill: var(--glass); opacity: 0.12; }
+}
+
+@keyframes scene-dome-gone {
+  0%, 48.9% { visibility: visible; }
+  49%, 96% { visibility: hidden; }
+  100% { visibility: visible; }
+}
+
+@keyframes scene-dome-broken {
+  0%, 48.9% { opacity: 0; }
+  49% { opacity: 1; }
+  53% { opacity: 0.35; }
+  57% { opacity: 0.95; }
+  70% { opacity: 0.55; }
+  85% { opacity: 0.9; }
+  94% { opacity: 0.7; }
+  97%, 100% { opacity: 0; }
+}
+
+.shard {
+  fill: #ffb3b3;
+  stroke: var(--bad-glass);
+  stroke-width: 1;
+  opacity: 0;
+  animation: scene-shard var(--seq) linear infinite;
+}
+
+@keyframes scene-shard {
+  0%, 48.9% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  49% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+    animation-timing-function: cubic-bezier(0.2, 0.6, 0.6, 1);
+  }
+  54% {
+    transform: translate(calc(var(--fx) * 0.6), -9px) rotate(calc(var(--turn) * 0.4));
+    opacity: 1;
+    animation-timing-function: ease-in;
+  }
+  64% {
+    transform: translate(var(--fx), var(--fy)) rotate(var(--turn));
+    opacity: 0;
+  }
+  100% {
+    transform: translate(var(--fx), var(--fy)) rotate(var(--turn));
+    opacity: 0;
+  }
+}
+
+/* ------------------------------------------------------------ greenhouse */
+
+.gh__air {
+  fill: rgba(140, 230, 180, 0.1);
+  transition: fill 520ms var(--ease);
+}
+
+.gh[data-food='0'] .gh__air {
+  fill: rgba(20, 30, 40, 0.35);
+}
+
+.lamp__cone {
+  fill: #ff7ad9;
+  opacity: 0;
+  transition: opacity 240ms var(--ease);
+}
+
+.lamp__bulb {
+  fill: #56617a;
+  transition: fill 240ms var(--ease);
+}
+
+.lamp.is-on .lamp__cone {
+  opacity: 0.3;
+}
+
+.lamp.is-on .lamp__bulb {
+  fill: #ffd0f3;
+}
+
+.plant {
+  color: #49c774;
+  transform: scale(var(--grow));
+  transition:
+    transform 520ms cubic-bezier(0.3, 1.4, 0.5, 1),
+    color 520ms var(--ease);
+}
+
+.gh[data-food='1'] .plant {
+  color: #8fbf5a;
+}
+
+.gh[data-food='0'] .plant {
+  color: #9a8346;
+  transform: scale(var(--grow)) rotate(var(--lean));
+}
+
+.plant__sway {
+  animation: scene-sway 3.2s ease-in-out infinite alternate;
+  animation-delay: var(--delay, 0s);
+}
+
+/* Unlit plants hang still. */
+.gh[data-food='0'] .plant__sway {
+  animation-play-state: paused;
+}
+
+@keyframes scene-sway {
+  from {
+    transform: rotate(-4deg);
+  }
+  to {
+    transform: rotate(4deg);
+  }
+}
+
+.gh__growth {
+  fill: #c8ffd9;
+  opacity: 0;
+}
+
+.gh[data-food='3'] .gh__growth {
+  animation: scene-growth 2.4s ease-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes scene-growth {
+  0% {
+    transform: translateY(8px) scale(0.4);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateY(-18px) scale(1);
+    opacity: 0;
+  }
+}
+
+.plant__fruit {
+  fill: #ff6b5e;
+  opacity: 0;
+  transition: opacity 520ms var(--ease);
+}
+
+.gh[data-food='3'] .plant__fruit {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------- science */
+
+.beam {
+  stroke: var(--sys-science);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-dasharray: 3 var(--gap);
+  opacity: 0;
+  transition: opacity 240ms var(--ease);
+}
+
+.sci.is-on .beam {
+  opacity: 0.4;
+  animation: scene-flow 0.45s linear infinite;
+  /* give the dish time to swing up before it starts talking */
+  transition-delay: 350ms;
+}
+
+.sci.is-working .beam {
+  opacity: 1;
+}
+
+/* No power: the dish hangs down. First block: it swings up to find Earth. */
+.dish {
+  transform: rotate(68deg);
+  transition: transform 700ms cubic-bezier(0.3, 1.3, 0.5, 1);
+}
+
+.sci.is-on .dish {
+  transform: rotate(19deg);
+}
+
+.dish__wave {
+  fill: none;
+  stroke: var(--sys-science);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  opacity: 0;
+}
+
+.sci.is-on .dish__wave {
+  animation: scene-wave 1.2s ease-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes scene-wave {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.sci__fizz {
+  fill: #fff;
+  opacity: 0;
+}
+
+.sci.is-on .sci__fizz {
+  animation: scene-fizz 1s ease-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes scene-fizz {
+  0% {
+    transform: translateY(0);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-4px);
+    opacity: 0;
+  }
+}
+
+.sci.is-working .rover__body {
+  animation: scene-rumble 0.35s linear infinite;
+}
+
+.sci__window {
+  fill: #20304f;
+  transition: fill 240ms var(--ease);
+}
+
+.sci.is-on .sci__window {
+  fill: #7c4fd0;
+}
+
+.sci__feed {
+  fill: #56617a;
+}
+
+.sci.is-on .sci__feed {
+  fill: var(--sys-science);
+}
+
+.rover {
+  transform: translateX(var(--go));
+  transition: transform 700ms var(--ease);
+}
+
+.rover__eye {
+  fill: #20304f;
+  transition: fill 240ms var(--ease);
+}
+
+.sci.is-working .rover__eye {
+  fill: var(--sys-science);
+}
+
+.sci.is-working .rover__wheel {
+  animation: scene-spin 1.4s linear infinite;
+}
+
+.sci.is-working .rover__drill {
+  animation: scene-drill 0.5s linear infinite;
+}
+
+@keyframes scene-drill {
+  0%,
+  100% {
+    transform: translateY(0) scaleX(1);
+  }
+  25% {
+    transform: translateY(1.6px) scaleX(-1);
+  }
+  50% {
+    transform: translateY(2.4px) scaleX(1);
+  }
+  75% {
+    transform: translateY(1.2px) scaleX(-1);
+  }
+}
+
+.rover__chip {
+  fill: var(--sys-science);
+  opacity: 0;
+}
+
+.sci.is-working .rover__chip {
+  animation: scene-chip 0.9s ease-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes scene-chip {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), -9px);
+    opacity: 0;
+  }
+}
+
+/* ----------------------------------------------------------- bad weather */
+
+.scene__gust {
+  fill: none;
+  stroke: #f0c79c;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  opacity: 0;
+  animation: scene-gust var(--d) linear infinite;
+  animation-delay: var(--delay);
+}
+
+@keyframes scene-gust {
+  0% {
+    transform: translateX(-80px);
+    opacity: 0;
+  }
+  20%,
+  70% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translateX(420px);
+    opacity: 0;
+  }
+}
+
+.sep,
+.hit {
+  stroke: #ffd27f;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  opacity: 0;
+}
+
+.sep {
+  animation: scene-sep var(--d) linear infinite;
+  animation-delay: var(--delay);
+}
+
+@keyframes scene-sep {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  12%,
+  75% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(272px, 204px);
+    opacity: 0;
+  }
+}
+
+.hit {
+  stroke: #fff1c9;
+  stroke-width: 2.6;
+  animation: scene-hit 2.2s linear infinite;
+  animation-delay: var(--delay);
+}
+
+@keyframes scene-hit {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  44% {
+    transform: translate(var(--tx), var(--ty));
+    opacity: 1;
+  }
+  46%,
+  100% {
+    transform: translate(var(--tx), var(--ty));
+    opacity: 0;
+  }
+}
+
+/* Turned away at the glass: a bright blue-white flash. */
+.spark {
+  fill: #9fd0ff;
+  stroke: #fff;
+  stroke-width: 0.8;
+  opacity: 0;
+  animation: scene-spark 2.2s linear infinite;
+  animation-delay: var(--delay);
+}
+
+/* Got through: a red burst inside the cabin. */
+.spark--through {
+  fill: var(--danger);
+  stroke: #ffd9d9;
+}
+
+@keyframes scene-spark {
+  0%,
+  42% {
+    transform: scale(0.2) rotate(0deg);
+    opacity: 0;
+  }
+  47% {
+    transform: scale(1.25) rotate(20deg);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(0.9) rotate(45deg);
+    opacity: 0.7;
+  }
+  85%,
+  100% {
+    transform: scale(0.4) rotate(60deg);
+    opacity: 0;
+  }
+}
+
+/* ------------------------------------------------------------------- dog */
+
+/* The tail is the gauge: wagging when the pod has the air it needs,
+   drooped and still when it does not. */
+.dog__tail {
+  animation: scene-wag 0.3s ease-in-out infinite alternate;
+}
+
+@keyframes scene-wag {
+  from {
+    transform: rotate(-24deg);
+  }
+  to {
+    transform: rotate(28deg);
+  }
+}
+
+.hab.is-short .dog__tail {
+  animation: none;
+  transform: rotate(78deg);
+}
+
+.dog__head {
+  transform-origin: -6px -9px;
+  transition: transform 400ms var(--ease);
+}
+
+.hab.is-short .dog__head {
+  transform: rotate(-17deg);
+}
+
+/* Comet outdoors: goes where the rover goes. */
+.buddy__go {
+  transform: translateX(var(--go));
+  transition: transform 700ms var(--ease) 120ms;
+}
+
+.buddy__tail {
+  animation: scene-wag 0.28s ease-in-out infinite alternate;
+}
+
+.buddy__head {
+  transform-origin: 9px -13px;
+  animation: scene-tilt 3.4s ease-in-out infinite;
+}
+
+@keyframes scene-tilt {
+  0%,
+  70%,
+  100% {
+    transform: rotate(0deg);
+  }
+  78%,
+  92% {
+    transform: rotate(-9deg);
+  }
+}
+
+/* Trotting: only while the day is being played out and there is somewhere
+   to go. */
+.scene.is-running .buddy.is-working .buddy__go {
+  transition: none;
+  animation: scene-rover-run var(--run) ease-in-out forwards;
+}
+
+.scene.is-running .buddy.is-working .buddy__leg--a {
+  animation: scene-trot 0.22s ease-in-out infinite alternate;
+}
+
+.scene.is-running .buddy.is-working .buddy__leg--b {
+  animation: scene-trot 0.22s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes scene-trot {
+  from {
+    transform: rotate(-24deg);
+  }
+  to {
+    transform: rotate(24deg);
+  }
+}
+
+.scene.is-running .buddy.is-working .buddy__bob {
+  animation: scene-rumble 0.22s linear infinite;
+}
+
+/* ---------------------------------------------------------------- events */
+
+/* Air leak: white puffs venting from a pinhole. */
+.leak__puff {
+  fill: #e9f6ff;
+  opacity: 0;
+  animation: scene-leak 1.1s ease-out infinite;
+  animation-delay: var(--delay);
+}
+
+@keyframes scene-leak {
+  0% {
+    transform: translate(0, 0) scale(0.4);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(var(--dx), -28px) scale(1.6);
+    opacity: 0;
+  }
+}
+
+.leak__mark {
+  fill: none;
+  stroke: var(--danger);
+  stroke-width: 1.6;
+  animation: scene-blink 0.7s steps(1) infinite;
+}
+
+/* Mould: grey-green spots swelling on the leaves. */
+.mould__spot {
+  fill: #7d8f6a;
+  stroke: #4c5a3b;
+  stroke-width: 0.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: scene-mould 2.2s ease-in-out infinite alternate;
+  animation-delay: var(--delay);
+}
+
+@keyframes scene-mould {
+  from {
+    transform: scale(0.7);
+    opacity: 0.75;
+  }
+  to {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+}
+
+.scene.is-blight .plant {
+  color: #b2b25c;
+}
+
+/* Quake: the whole picture jolts, and soil skitters off the mound. */
+.scene.is-quake {
+  animation: scene-shake 2.4s linear infinite;
+}
+
+@keyframes scene-shake {
+  0%,
+  76%,
+  100% {
+    transform: translate(0, 0);
+  }
+  79% {
+    transform: translate(-4px, 1px);
+  }
+  83% {
+    transform: translate(4px, -1px);
+  }
+  87% {
+    transform: translate(-3px, -1px);
+  }
+  91% {
+    transform: translate(2px, 1px);
+  }
+  95% {
+    transform: translate(-1px, 0);
+  }
+}
+
+.quake__crack {
+  fill: none;
+  stroke: #05080f;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  opacity: 0.85;
+}
+
+.quake__stone {
+  fill: #d8c4a4;
+  stroke: rgba(4, 7, 15, 0.5);
+  stroke-width: 0.5;
+  opacity: 0;
+  animation: scene-tumble 1.7s ease-in infinite;
+  animation-delay: var(--delay);
+}
+
+.scene--moon .quake__stone {
+  fill: #c9d1e0;
+}
+
+@keyframes scene-tumble {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy));
+    opacity: 0;
+  }
+}
+
+/* Lucky find: something glinting where the rover can reach it. */
+.find__glint {
+  fill: #fff;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: scene-glint 1.2s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes scene-glint {
+  0%,
+  100% {
+    transform: scale(0.3) rotate(0deg);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scale(1.15) rotate(40deg);
+    opacity: 1;
+  }
+}
+
+/* Dust devil: sweeping to and fro across the panels. */
+.sweeper {
+  animation: scene-sweeper 2.8s ease-in-out infinite alternate;
+}
+
+@keyframes scene-sweeper {
+  from {
+    transform: translateX(-12px) skewX(-8deg);
+  }
+  to {
+    transform: translateX(64px) skewX(8deg);
+  }
+}
+
+/* -------------------------------------------------- playing the day out */
+
+/* After Run is pressed the picture acts out the day for a few seconds before
+   the results appear: the rover drives to the edge planting markers, the
+   digger works double time, and today's dashed scoops set solid. --run is
+   the length of that; it matches RUN_MS in app.js. */
+.scene.is-running {
+  --run: 3.6s;
+}
+
+.scene__sweep {
+  fill: #fff;
+  opacity: 0;
+}
+
+.scene.is-running .scene__sweep {
+  opacity: 0.06;
+  animation: scene-sweep var(--run) linear forwards;
+}
+
+@keyframes scene-sweep {
+  to {
+    transform: translateX(760px);
+  }
+}
+
+.scene.is-running .sci.is-working .rover {
+  transition: none;
+  animation: scene-rover-run var(--run) ease-in-out forwards;
+}
+
+@keyframes scene-rover-run {
+  0% {
+    transform: translateX(var(--go));
+  }
+  26%,
+  32% {
+    transform: translateX(max(var(--go), 16px));
+  }
+  46%,
+  52% {
+    transform: translateX(max(var(--go), 41px));
+  }
+  66%,
+  72% {
+    transform: translateX(max(var(--go), 66px));
+  }
+  92%,
+  100% {
+    transform: translateX(98px);
+  }
+}
+
+.sample {
+  opacity: 0;
+  transform: scale(0.2);
+}
+
+.scene.is-running .sci.is-working .sample {
+  animation: scene-plant 380ms cubic-bezier(0.3, 1.7, 0.5, 1) forwards;
+  animation-delay: calc(var(--run) * (0.3 + var(--at) * 0.2));
+}
+
+@keyframes scene-plant {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.scene.is-running .scoop.is-on {
+  animation: scene-set var(--run) linear forwards;
+}
+
+@keyframes scene-set {
+  0%,
+  62% {
+    fill: rgba(255, 201, 77, 0.2);
+    stroke: var(--sys-shield);
+    stroke-dasharray: 3 2.4;
+  }
+  70%,
+  100% {
+    fill: rgba(255, 201, 77, 0.9);
+    stroke: #fff3c4;
+    stroke-dasharray: 60 0;
+  }
+}
+
+.scene.is-running .scene__depth {
+  opacity: 0;
+  transition: opacity 600ms var(--ease) 1600ms;
+}
+
+/* -------------------------------------------------------- click feedback */
+
+.scene-spark {
+  pointer-events: none;
+}
+
+.scene-float {
+  font-size: 16px;
+  font-weight: 800;
+  paint-order: stroke;
+  stroke: #060a14;
+  stroke-width: 4.5px;
+  stroke-linejoin: round;
+  pointer-events: none;
+  animation: scene-float 1s ease-out forwards;
+}
+
+.scene-float--down {
+  animation-name: scene-float-down;
+}
+
+@keyframes scene-float {
+  0% {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-24px);
+    opacity: 0;
+  }
+}
+
+@keyframes scene-float-down {
+  0% {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+}
+
+.scene-ring {
+  fill: none;
+  stroke-width: 3;
+  pointer-events: none;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: scene-ring 650ms ease-out forwards;
+}
+
+@keyframes scene-ring {
+  0% {
+    transform: scale(0.4);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+/* Pointing at a row in the power board lights up what it controls. */
+.sol-grid:has([data-row-system='lifeSupport']:is(:hover, :focus-within)) .scene [data-sys='lifeSupport'],
+.sol-grid:has([data-row-system='greenhouse']:is(:hover, :focus-within)) .scene [data-sys='greenhouse'],
+.sol-grid:has([data-row-system='shielding']:is(:hover, :focus-within)) .scene [data-sys='shielding'],
+.sol-grid:has([data-row-system='science']:is(:hover, :focus-within)) .scene [data-sys='science'],
+.sol-grid:has(.toggle-card:is(:hover, :focus-visible)) .scene [data-sys='shelter'] {
+  filter: drop-shadow(0 0 5px var(--c));
+}
+
+/* -------------------------------------------------------- reduced motion */
+
+/* Decoration stops. Everything that carries meaning keeps moving, because
+   in this picture a still fan and a spinning fan say different things. */
+@media (prefers-reduced-motion: reduce) {
+  .scene.is-quake,
+  .scene__twinkle,
+  .scene__devil,
+  .sun__rays,
+  .crew__bob,
+  .digger.is-on .digger__cab,
+  .sci.is-working .rover__body {
+    animation: none;
+  }
+}

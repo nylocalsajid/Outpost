@@ -1,0 +1,140 @@
+/* ==========================================================================
+   tokens.css — the only file that defines a raw colour, size or duration.
+   Everything else references these. Changing the look means changing this file.
+   ========================================================================== */
+
+/* ------------------------------------------------------------------ fonts */
+/* Archivo (Omnibus-Type) and JetBrains Mono (JetBrains), both under the SIL
+   Open Font License 1.1. Latin subsets, variable weight. */
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url("../fonts/archivo.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Archivo";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/archivo-italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url("../fonts/jetbrains-mono.woff2") format("woff2");
+}
+
+/* Arabic. Readex Pro (SIL Open Font License) is only downloaded when there
+   is Arabic on the page, and only its Arabic letters are used: the Latin
+   stays in Archivo. */
+@font-face {
+  font-family: "Readex Pro";
+  font-style: normal;
+  font-weight: 160 700;
+  font-display: swap;
+  src: url("../fonts/readex-pro-arabic.woff2") format("woff2");
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891,
+    U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41,
+    U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+
+:root {
+  /* ---------------------------------------------------------------- palette */
+  /* Deep space base, warm instrument accents. Chosen for contrast first:
+     every text colour below passes WCAG AA on its intended background. */
+  --bg-deep: #070b16;
+  --bg: #0b1222;
+  --bg-raised: #121b2f;
+  --bg-raised-2: #18233d;
+  --bg-inset: #080d1a;
+
+  --line: #24324f;
+  --line-strong: #35486e;
+
+  --text: #eef3ff;
+  --text-dim: #a8b6d4;
+  --text-faint: #7183a6;
+
+  /* System colours. Each is a hue a child can name, at a lightness that works
+     on the dark background and in the meters. */
+  --sys-air: #4fd1ff; /* cyan    — oxygen / life support */
+  --sys-food: #5fe08a; /* green   — greenhouse / food */
+  --sys-shield: #ffc94d; /* amber   — regolith shielding */
+  --sys-science: #c48cff; /* violet  — science */
+  --sys-health: #ff8aa8; /* pink    — crew health */
+  --sys-power: #ffe066; /* yellow  — power blocks */
+
+  --danger: #ff6b6b;
+  --danger-bg: #3a1620;
+  --warn: #ffb020;
+  --warn-bg: #3a2a10;
+  --good: #4fe0a0;
+  --good-bg: #0f3028;
+  --info-bg: #132742;
+
+  --live: #4fe0a0;
+  --archive: #8fa3c8;
+
+  /* ------------------------------------------------------------ typography */
+  /* Archivo for everything you read, JetBrains Mono for readouts and record
+     IDs. Both ship inside the game (see the @font-face rules below), so the
+     type looks the same on every machine and still works offline. */
+  --font: "Archivo", "Readex Pro", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "Readex Pro", ui-monospace, "SF Mono", "Cascadia Mono",
+    Menlo, Consolas, monospace;
+
+  --fs-display: clamp(2.1rem, 6vw, 3.6rem);
+  --fs-title: clamp(1.5rem, 3.6vw, 2.1rem);
+  --fs-heading: clamp(1.15rem, 2.4vw, 1.4rem);
+  --fs-body: clamp(1rem, 1.6vw, 1.08rem);
+  --fs-small: 0.92rem;
+  --fs-label: 0.78rem;
+
+  --lh-tight: 1.18;
+  --lh-body: 1.6;
+
+  /* ---------------------------------------------------------------- layout */
+  --shell-max: 1120px;
+  --gap-xs: 0.35rem;
+  --gap-sm: 0.6rem;
+  --gap: 1rem;
+  --gap-lg: 1.5rem;
+  --gap-xl: 2.25rem;
+
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  /* Minimum interactive size. Deliberately large: the target audience
+     includes seven-year-olds on tablets. */
+  --touch: 48px;
+
+  /* --------------------------------------------------------------- effects */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 18px 50px rgba(0, 0, 0, 0.55);
+  --ring: 0 0 0 3px rgba(79, 209, 255, 0.45);
+
+  --dur-fast: 120ms;
+  --dur: 240ms;
+  --dur-slow: 520ms;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* Respect a player's reduced-motion setting: animation here is decorative. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 1ms;
+    --dur: 1ms;
+    --dur-slow: 1ms;
+  }
+}

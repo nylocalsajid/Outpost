@@ -1,0 +1,712 @@
+/* ==========================================================================
+   components.css — reusable pieces: cards, buttons, badges, meters, blocks.
+   ========================================================================== */
+
+/* ----------------------------------------------------------------- cards */
+
+.card {
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--gap);
+  box-shadow: var(--shadow-sm);
+}
+
+.card--lg {
+  border-radius: var(--radius-lg);
+  padding: var(--gap-lg);
+}
+
+.card--inset {
+  background: var(--bg-inset);
+  box-shadow: none;
+}
+
+.card--good {
+  border-color: rgba(79, 224, 160, 0.4);
+  background: linear-gradient(180deg, var(--good-bg), var(--bg-raised) 70%);
+}
+
+.card--warn {
+  border-color: rgba(255, 176, 32, 0.45);
+  background: linear-gradient(180deg, var(--warn-bg), var(--bg-raised) 70%);
+}
+
+.card--danger {
+  border-color: rgba(255, 107, 107, 0.5);
+  background: linear-gradient(180deg, var(--danger-bg), var(--bg-raised) 70%);
+}
+
+.card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  margin-bottom: var(--gap-sm);
+}
+
+/* --------------------------------------------------------------- buttons */
+
+.btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  min-height: var(--touch);
+  padding: 0.7em 1.3em;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  background: var(--bg-raised-2);
+  color: var(--text);
+  font: inherit;
+  font-weight: 650;
+  line-height: 1.1;
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+
+.btn:hover:not(:disabled) {
+  background: #1f2c4a;
+  border-color: #46598a;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn--primary {
+  background: linear-gradient(180deg, #3aa6ff, #1f6fd0);
+  border-color: #5fc0ff;
+  color: #04121f;
+  font-weight: 700;
+  box-shadow: 0 4px 0 #14477f, var(--shadow-sm);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, #58b6ff, #2a7fe0);
+  border-color: #8fd4ff;
+}
+
+.btn--primary:active:not(:disabled) {
+  box-shadow: 0 2px 0 #14477f;
+  transform: translateY(2px);
+}
+
+.btn--go {
+  background: linear-gradient(180deg, #5fe08a, #2bab62);
+  border-color: #8af0ad;
+  color: #04200f;
+  font-weight: 700;
+  box-shadow: 0 4px 0 #1b7b45, var(--shadow-sm);
+}
+
+.btn--go:hover:not(:disabled) {
+  background: linear-gradient(180deg, #78eb9f, #34bd6e);
+}
+
+.btn--go:active:not(:disabled) {
+  box-shadow: 0 2px 0 #1b7b45;
+  transform: translateY(2px);
+}
+
+.btn--danger {
+  border-color: rgba(255, 107, 107, 0.6);
+  color: #ffd4d4;
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--text-dim);
+  font-weight: 700;
+}
+
+.btn--ghost:hover:not(:disabled) {
+  color: var(--text);
+  border-color: var(--line-strong);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.btn--sm {
+  min-height: 38px;
+  padding: 0.45em 0.95em;
+  font-size: var(--fs-small);
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn--lg {
+  min-height: 58px;
+  padding: 0.85em 1.8em;
+  font-size: 1.1rem;
+}
+
+/* ---------------------------------------------------------------- badges */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.3em 0.75em;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong);
+  background: var(--bg-inset);
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.badge--live {
+  border-color: rgba(79, 224, 160, 0.55);
+  color: var(--live);
+  background: rgba(79, 224, 160, 0.09);
+}
+
+.badge--archive {
+  border-color: var(--line-strong);
+  color: var(--archive);
+}
+
+.badge--danger {
+  border-color: rgba(255, 107, 107, 0.6);
+  color: #ff9a9a;
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.badge--warn {
+  border-color: rgba(255, 176, 32, 0.6);
+  color: var(--warn);
+  background: rgba(255, 176, 32, 0.1);
+}
+
+.badge__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.badge--live .badge__dot {
+  animation: live-blink 2s infinite;
+}
+
+@keyframes live-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* ---------------------------------------------------------------- meters */
+
+.meter {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0;
+}
+
+.meter__icon {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--meter-color) 18%, transparent);
+  color: var(--meter-color);
+  flex: none;
+}
+
+.meter__icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.meter__body {
+  min-width: 0;
+}
+
+.meter__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.28rem;
+}
+
+.meter__name {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.meter__value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--meter-color);
+}
+
+.meter__track {
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-inset);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.meter__fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--meter-color);
+  transition: width var(--dur-slow) var(--ease);
+}
+
+.meter--critical .meter__fill {
+  background: var(--danger);
+}
+
+.meter--critical .meter__value {
+  color: var(--danger);
+}
+
+.meter__delta {
+  font-size: var(--fs-small);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  min-width: 3.1ch;
+  text-align: right;
+}
+
+.meter__delta--up {
+  color: var(--good);
+}
+.meter__delta--down {
+  color: var(--danger);
+}
+.meter__delta--flat {
+  color: var(--text-faint);
+}
+
+/* ------------------------------------------------------ power block chips */
+
+.blocks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.block {
+  width: 15px;
+  height: 22px;
+  border-radius: 4px;
+  background: var(--sys-power);
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.28);
+}
+
+.block--spent {
+  background: var(--bg-inset);
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+
+.block--battery {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--sys-power),
+    var(--sys-power) 4px,
+    #c9ab2e 4px,
+    #c9ab2e 8px
+  );
+}
+
+/* ------------------------------------------------------------- allocator */
+
+.alloc {
+  display: grid;
+  gap: var(--gap-sm);
+}
+
+.alloc__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--gap-sm);
+  align-items: center;
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--radius);
+  background: var(--bg-inset);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--row-color);
+  transition: border-color var(--dur-fast) var(--ease);
+}
+
+/* Only air and food get the red treatment: see rowNote() in allocator.js. */
+.alloc__row--short {
+  border-color: rgba(255, 107, 107, 0.45);
+  background: linear-gradient(90deg, rgba(255, 107, 107, 0.08), var(--bg-inset) 40%);
+}
+
+/* Not set up yet: a single quiet line saying when it arrives. */
+.alloc__row--locked {
+  grid-template-columns: 1fr auto;
+  padding: 0.5rem 0.85rem;
+  border-style: dashed;
+  border-left-style: solid;
+  opacity: 0.6;
+}
+
+.alloc__row--locked .alloc__name {
+  margin: 0;
+}
+
+.alloc__soon {
+  font-size: var(--fs-small);
+  font-weight: 650;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+/* An unfunded optional system is dimmed, not alarmed. */
+.alloc__row--idle {
+  opacity: 0.72;
+}
+
+.alloc__info {
+  min-width: 0;
+}
+
+.alloc__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.15rem;
+}
+
+.alloc__name svg {
+  width: 17px;
+  height: 17px;
+  color: var(--row-color);
+  flex: none;
+}
+
+.alloc__needs {
+  margin-left: 0.2rem;
+  padding: 0.05rem 0.45rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong);
+  font-size: 0.74rem;
+  font-weight: 650;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+/* Today this system needs more than usual. */
+.alloc__needs--up {
+  border-color: var(--warn);
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+
+/* The row today's event is about. */
+.alloc__row--event {
+  border-color: var(--warn);
+  box-shadow: 0 0 0 3px rgba(255, 176, 32, 0.16);
+}
+
+.alloc__plain {
+  font-size: var(--fs-small);
+  color: var(--text-dim);
+  line-height: 1.35;
+}
+
+.alloc__pips {
+  display: flex;
+  gap: 3px;
+  margin-top: 0.4rem;
+}
+
+.alloc__pip {
+  width: 100%;
+  max-width: 26px;
+  height: 7px;
+  border-radius: 3px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+}
+
+.alloc__pip--on {
+  background: var(--row-color);
+  border-color: var(--row-color);
+}
+
+.alloc__pip--need {
+  border-color: var(--row-color);
+  border-style: dashed;
+}
+
+.alloc__side {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+}
+
+.alloc__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* What these blocks will do today. Updates on every press. */
+.alloc__effect {
+  padding: 0.14rem 0.6rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.alloc__effect--good {
+  color: var(--good);
+  background: var(--good-bg);
+  border-color: rgba(79, 224, 160, 0.35);
+}
+
+.alloc__effect--bad {
+  color: #ffb3b3;
+  background: var(--danger-bg);
+  border-color: rgba(255, 107, 107, 0.45);
+}
+
+.alloc__effect--flat {
+  color: var(--text-faint);
+  background: var(--bg);
+  border-color: var(--line);
+}
+
+.alloc__row--bay {
+  border-color: rgba(79, 224, 160, 0.4);
+  background: linear-gradient(90deg, rgba(79, 224, 160, 0.08), var(--bg-inset) 45%);
+}
+
+.alloc__row--bay .alloc__controls {
+  min-height: var(--touch);
+}
+
+.stepper {
+  appearance: none;
+  width: var(--touch);
+  height: var(--touch);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-raised-2);
+  color: var(--text);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+
+.stepper:hover:not(:disabled) {
+  background: var(--row-color);
+  border-color: var(--row-color);
+  color: #04121f;
+}
+
+.stepper:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.stepper:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.alloc__count {
+  min-width: 2.2ch;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  color: var(--row-color);
+}
+
+/* ------------------------------------------------------------ toggle card */
+
+.toggle-card {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  width: 100%;
+  text-align: left;
+  padding: 0.85rem;
+  border-radius: var(--radius);
+  border: 2px solid var(--line);
+  background: var(--bg-inset);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+
+.toggle-card:hover {
+  border-color: var(--line-strong);
+}
+
+.toggle-card[aria-pressed='true'] {
+  border-color: var(--sys-shield);
+  background: linear-gradient(90deg, rgba(255, 201, 77, 0.14), var(--bg-inset) 60%);
+}
+
+.toggle-card__box {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 7px;
+  border: 2px solid var(--line-strong);
+  display: grid;
+  place-items: center;
+  color: #04121f;
+}
+
+.toggle-card[aria-pressed='true'] .toggle-card__box {
+  background: var(--sys-shield);
+  border-color: var(--sys-shield);
+}
+
+.toggle-card__box svg {
+  width: 16px;
+  height: 16px;
+  opacity: 0;
+}
+
+.toggle-card[aria-pressed='true'] .toggle-card__box svg {
+  opacity: 1;
+}
+
+.toggle-card__title {
+  font-weight: 700;
+}
+
+.toggle-card__sub {
+  font-size: var(--fs-small);
+  color: var(--text-dim);
+}
+
+/* ------------------------------------------------------------- source tag */
+
+.source-tag {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4em;
+  margin-top: 0.5rem;
+  padding: 0.3em 0.6em;
+  border-radius: var(--radius-sm);
+  background: var(--bg-inset);
+  border: 1px solid var(--line);
+  font-size: 0.76rem;
+  line-height: 1.45;
+  color: var(--text-faint);
+}
+
+.source-tag a {
+  color: var(--text-dim);
+}
+
+.source-tag strong {
+  color: var(--text-dim);
+  font-weight: 650;
+}
+
+/* ------------------------------------------------------------------ misc */
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  flex-wrap: wrap;
+}
+
+.row--between {
+  justify-content: space-between;
+}
+
+.row--tight {
+  gap: var(--gap-xs);
+}
+
+.stack {
+  display: grid;
+  gap: var(--gap);
+}
+
+.stack--sm {
+  gap: var(--gap-sm);
+}
+
+.stack--lg {
+  gap: var(--gap-lg);
+}
+
+.divider {
+  height: 1px;
+  background: var(--line);
+  border: 0;
+  margin: var(--gap) 0;
+}
+
+.pill-note {
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius);
+  background: var(--info-bg);
+  border: 1px solid var(--line-strong);
+  font-size: var(--fs-small);
+  color: var(--text-dim);
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--line-strong);
+  border-top-color: var(--sys-air);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

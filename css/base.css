@@ -1,0 +1,333 @@
+/* ==========================================================================
+   base.css — reset, document shell, typography, starfield backdrop.
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* The homepage fly-by strip is as wide as the window, which is a scrollbar
+     wider than the page. Hide that sliver here, on the root only: putting it
+     on <body> as well would stop the status bar and the outpost picture from
+     staying pinned while the page scrolls. */
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: var(--font);
+  /* Archivo sets its words close together; a little air helps young readers. */
+  word-spacing: 0.06em;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Starfield: three layers of tiny radial gradients. Cheap, no images, and it
+   sits behind everything without intercepting pointer events. */
+.starfield {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: var(--bg-deep);
+  background-image:
+    radial-gradient(1.4px 1.4px at 18% 22%, rgba(255, 255, 255, 0.85), transparent 60%),
+    radial-gradient(1.1px 1.1px at 72% 14%, rgba(255, 255, 255, 0.7), transparent 60%),
+    radial-gradient(1.6px 1.6px at 41% 71%, rgba(255, 255, 255, 0.8), transparent 60%),
+    radial-gradient(1px 1px at 88% 58%, rgba(255, 255, 255, 0.6), transparent 60%),
+    radial-gradient(1.2px 1.2px at 9% 83%, rgba(255, 255, 255, 0.65), transparent 60%),
+    radial-gradient(1px 1px at 57% 37%, rgba(255, 255, 255, 0.5), transparent 60%),
+    radial-gradient(1.3px 1.3px at 31% 48%, rgba(255, 255, 255, 0.55), transparent 60%),
+    radial-gradient(1px 1px at 64% 88%, rgba(255, 255, 255, 0.5), transparent 60%),
+    radial-gradient(900px 620px at 76% -8%, rgba(79, 209, 255, 0.1), transparent 70%),
+    radial-gradient(760px 540px at 10% 108%, rgba(196, 140, 255, 0.09), transparent 70%);
+}
+
+/* Two mood layers over the stars.
+
+   ::before  the Sun's glare, creeping in from the top corner. A little more
+             each level, so the player can feel the mission tightening.
+   ::after   the sky of home. Fades in over everything once the crew flies
+             back, and takes its colour from how the mission went. */
+.starfield::before,
+.starfield::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1400ms var(--ease);
+}
+
+.starfield::before {
+  background: radial-gradient(
+    1100px 760px at -6% -10%,
+    rgba(255, 150, 60, 0.55),
+    rgba(255, 90, 60, 0.18) 45%,
+    transparent 72%
+  );
+}
+
+body[data-level='2'] .starfield::before {
+  opacity: 0.2;
+}
+
+body[data-level='3'] .starfield::before {
+  opacity: 0.42;
+}
+
+body[data-level='4'] .starfield::before {
+  opacity: 0.68;
+}
+
+.starfield::after {
+  background:
+    radial-gradient(900px 520px at 50% 108%, rgba(120, 190, 255, 0.34), transparent 70%),
+    radial-gradient(130% 100% at 82% 4%, #2c6fc0 0%, #153f7f 34%, #0a1f47 66%, #050e22 100%);
+}
+
+body[data-screen='debrief'] .starfield::after {
+  opacity: 1;
+}
+
+/* Gold on the horizon for a mission that came home with what it went for. */
+body[data-screen='debrief'][data-tier='success'] .starfield::after,
+body[data-screen='debrief'][data-tier='flagship'] .starfield::after {
+  background:
+    radial-gradient(1000px 480px at 50% 110%, rgba(255, 200, 110, 0.5), transparent 70%),
+    radial-gradient(130% 100% at 82% 4%, #2c6fc0 0%, #153f7f 34%, #0a1f47 66%, #050e22 100%);
+}
+
+/* A greyer homecoming for a mission that had to be cut short. */
+body[data-screen='debrief'][data-tier='lost'] .starfield::after {
+  background:
+    radial-gradient(900px 480px at 50% 110%, rgba(255, 120, 120, 0.22), transparent 70%),
+    radial-gradient(130% 100% at 82% 4%, #4a5674 0%, #2a3350 36%, #151b30 68%, #080b16 100%);
+}
+
+/* On the way home the cards take the blue of the sky behind them. */
+body[data-screen='debrief'] {
+  --bg-raised: #10284f;
+  --bg-raised-2: #163463;
+  --bg-inset: #0a1c3b;
+  --line: #29497f;
+  --line-strong: #3d66a8;
+}
+
+body[data-screen='debrief'][data-tier='lost'] {
+  --bg-raised: #1c2338;
+  --bg-raised-2: #252e48;
+  --bg-inset: #121829;
+  --line: #333d5c;
+  --line-strong: #4a5678;
+}
+
+#app {
+  position: relative;
+  z-index: 1;
+  max-width: var(--shell-max);
+  margin: 0 auto;
+  padding: var(--gap) var(--gap) var(--gap-xl);
+}
+
+@media (min-width: 720px) {
+  #app {
+    padding: var(--gap-lg) var(--gap-lg) var(--gap-xl);
+  }
+}
+
+/* ------------------------------------------------------------- typography */
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0 0 0.4em;
+  line-height: var(--lh-tight);
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+h1 {
+  font-size: var(--fs-title);
+}
+h2 {
+  font-size: var(--fs-heading);
+}
+h3 {
+  font-size: 1.05rem;
+}
+
+p {
+  margin: 0 0 0.9em;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+strong {
+  font-weight: 650;
+  color: #fff;
+}
+
+a {
+  color: var(--sys-air);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  color: #fff;
+}
+
+ul {
+  margin: 0 0 1em;
+  padding-left: 1.2em;
+}
+
+li {
+  margin-bottom: 0.35em;
+}
+
+.label {
+  font-size: var(--fs-label);
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.dim {
+  color: var(--text-dim);
+}
+
+.faint {
+  color: var(--text-faint);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.center {
+  text-align: center;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------- a11y ---- */
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+  border-radius: var(--radius-sm);
+}
+
+/* --------------------------------------------------------------- motion -- */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pulse-warn {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(255, 107, 107, 0);
+  }
+}
+
+@keyframes sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
+
+.fade-up {
+  animation: fade-up var(--dur) var(--ease) both;
+}
+
+
+/* ==========================================================================
+   Arabic: right-to-left
+   ==========================================================================
+   The page direction is set on <html> (see ui/i18n.js). Most of the layout is
+   flexbox and grid, which mirror themselves. These are the things that do not.
+*/
+
+/* Arabic letters join up. Letter-spacing pulls them apart, so the tracked-out
+   labels used in English must lose their tracking. */
+[dir='rtl'] *:not([data-no-tr], [data-no-tr] *) {
+  letter-spacing: 0 !important;
+}
+
+[dir='rtl'] body {
+  line-height: 1.75;
+}
+
+[dir='rtl'] h1,
+[dir='rtl'] h2,
+[dir='rtl'] h3 {
+  line-height: 1.35;
+}
+
+/* Text inside pictures is placed by coordinates worked out for left-to-right.
+   Arabic words still read correctly; only the anchoring stays as drawn. */
+[dir='rtl'] svg text {
+  direction: ltr;
+}
+
+/* The game's name and its artwork are one drawing: they do not mirror. */
+[dir='rtl'] .title__name-wrap,
+[dir='rtl'] .space-chase,
+[dir='rtl'] .scene-frame svg,
+[dir='rtl'] .flight {
+  direction: ltr;
+}
+
+/* Things aligned to the left in English belong on the right in Arabic. */
+[dir='rtl'] table th,
+[dir='rtl'] table td {
+  text-align: right;
+}
